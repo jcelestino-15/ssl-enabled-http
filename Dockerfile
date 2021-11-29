@@ -16,12 +16,13 @@ RUN a2enmod userdir
 RUN a2enmod autoindex
 
 #enabling other Apache modules
+RUN a2enmod rewrite
 RUN a2enmod ssl
+RUN a2enmod headers
 
 #creating self signed certificates and placing in appropriate location
-COPY self-signed.crt /etc/apache2/ssl/ssl.crt
-COPY selfsigned.key /etc/apache2/ssl/ssl.key
-RUN mkdir -p /var/run/apache2/
+RUN sudo mkdir -p /etc/apache2/ssl/
+RUN openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=CA/L=Los Angeles/O=CSUN/OU=CIT/CN=server_IP_address" -keyout /etc/apache2/ssl/ssl.key -out /etc/apache2/ssl/ssl.crt 
 
 #creating 3 directories to host the 3 websites
 WORKDIR /var/www/html
